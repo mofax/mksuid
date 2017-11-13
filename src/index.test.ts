@@ -4,7 +4,7 @@ describe("ksuid tests", () => {
   it("generates valid ids", () => {
     let id = ksuid();
     expect(typeof id).toBe("string");
-    expect(id.length).toBe(19);
+    expect(id.length).toBe(26);
   });
 
   it("generates ids with specific dates", () => {
