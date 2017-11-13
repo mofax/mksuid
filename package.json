@@ -1,0 +1,35 @@
+{
+  "name": "mksuid",
+  "version": "0.0.0",
+  "description": "K sortable unique ID library",
+  "main": "dist/index.js",
+  "types":"dist/index.d.ts",
+  "scripts": {
+    "test": "tsc && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mofax/mksuid.git"
+  },
+  "keywords": [
+    "ksuid",
+    "mksuid",
+    "random"
+  ],
+  "author": "Alloys Mila",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mofax/mksuid/issues"
+  },
+  "homepage": "https://github.com/mofax/mksuid#readme",
+  "dependencies": {
+    "base-x": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/base-x": "^1.0.29",
+    "@types/jest": "^21.1.6",
+    "@types/node": "^8.0.51",
+    "jest": "^21.2.1",
+    "typescript": "^2.6.1"
+  }
+}
