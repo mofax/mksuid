@@ -1,5 +1,5 @@
 src
 coverage
 .circleci
-*.ts
 *.test.js
+*.test.d.ts
