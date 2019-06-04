@@ -26,10 +26,10 @@
     "base-x": "^3.0.2"
   },
   "devDependencies": {
-    "@types/base-x": "^1.0.29",
-    "@types/jest": "^21.1.6",
-    "@types/node": "^8.0.51",
-    "jest": "^21.2.1",
-    "typescript": "^2.6.1"
+    "@types/base-x": "1.0.30",
+    "@types/jest": "21.1.10",
+    "@types/node": "8.10.49",
+    "jest": "^24.8.0",
+    "typescript": "2.9.2"
   }
 }
