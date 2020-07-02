@@ -50,7 +50,7 @@ function parse(str: string) {
 
   return {
     time: new Date(parseInt(timeStr)),
-    payload
+    payload,
   };
 }
 
