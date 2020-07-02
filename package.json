@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/mofax/mksuid#readme",
   "dependencies": {
-    "base-x": "^3.0.2"
+    "base-x": "3.0.8"
   },
   "devDependencies": {
     "@types/base-x": "1.0.30",
-    "@types/jest": "21.1.10",
+    "@types/jest": "26.0.3",
     "@types/node": "8.10.49",
-    "jest": "^24.8.0",
-    "typescript": "2.9.2"
+    "jest": "^26.1.0",
+    "typescript": "3.9.6"
   }
 }
