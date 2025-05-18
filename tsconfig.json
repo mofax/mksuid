@@ -12,7 +12,11 @@
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+
+		// definitions
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"outDir": "dist",
 
 		// Best practices
 		"strict": true,
@@ -25,5 +29,6 @@
 		"noUnusedParameters": false,
 		"noPropertyAccessFromIndexSignature": false
 	},
-	"include": ["src/**/*"]
+	"include": ["src/**/*"],
+	"exclude": ["**/*.test.ts", "**/__tests__/**"]
 }

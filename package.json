@@ -1,6 +1,6 @@
 {
 	"name": "mksuid",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"author": "Alloys Mila",
 	"repository": {
 		"type": "git",
@@ -27,7 +27,7 @@
 	"license": "MIT",
 	"scripts": {
 		"prepare": "npm run build",
-		"build": "bun build src/index.ts --outdir=./dist",
+		"build": "bun build src/index.ts --outdir=./dist && bun run tsc",
 		"test": "rm -rf dist && bun test",
 		"format": "prettier --write ."
 	},
