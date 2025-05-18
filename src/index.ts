@@ -6,7 +6,7 @@ const base62 = baseX(baseAlpha);
 
 const TIME_LENGTH_IN_BYTES = 6;
 const PAYLOAD_LENGTH_IN_BYTES = 14;
-const RAW_ID_LENGTH = TIME_LENGTH_IN_BYTES + PAYLOAD_LENGTH_IN_BYTES;
+const RAW_ID_LENGTH = 1 + TIME_LENGTH_IN_BYTES + PAYLOAD_LENGTH_IN_BYTES; // +1 for time length byte
 const MAX_TIMESTAMP_VALUE = Math.pow(2, 8 * TIME_LENGTH_IN_BYTES) - 1;
 
 function getTime(date?: Date): Uint8Array {
@@ -35,8 +35,15 @@ function getPayload(): Uint8Array {
 export default function mKsuid(date?: Date): string {
 	const time = getTime(date);
 	const payload = getPayload();
-	const rawId = Buffer.concat([time, payload]);
-	return base62.encode(rawId);
+	const lengthByte = new Uint8Array([TIME_LENGTH_IN_BYTES]);
+	const rawId = new Uint8Array(
+		lengthByte.length + time.length + payload.length
+	);
+	rawId.set(lengthByte, 0);
+	rawId.set(time, lengthByte.length);
+	rawId.set(payload, lengthByte.length + time.length);
+
+	return base62.encode(rawId); // base62.encode should accept Uint8Array
 }
 
 function parse(str: string): { time: Date; payload: Uint8Array } {
@@ -47,10 +54,15 @@ function parse(str: string): { time: Date; payload: Uint8Array } {
 		);
 	}
 
-	const time = decoded.subarray(0, TIME_LENGTH_IN_BYTES);
-	const payload = decoded.subarray(TIME_LENGTH_IN_BYTES);
+	const timeLength = decoded[0];
+	if (timeLength !== TIME_LENGTH_IN_BYTES) {
+		throw new Error(`Unsupported timestamp length: ${timeLength} bytes`);
+	}
 
-	const timestamp = Buffer.from(time).readUIntBE(0, TIME_LENGTH_IN_BYTES);
+	const time = decoded.subarray(1, 1 + timeLength);
+	const payload = decoded.subarray(1 + timeLength);
+
+	const timestamp = Buffer.from(time).readUIntBE(0, timeLength);
 
 	return {
 		time: new Date(timestamp),
