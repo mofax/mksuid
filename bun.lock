@@ -3,11 +3,9 @@
   "workspaces": {
     "": {
       "name": "mksuid",
-      "dependencies": {
-        "base-x": "5.0.1",
-      },
       "devDependencies": {
         "@types/bun": "latest",
+        "base-x": "5.0.1",
         "eslint": "^8.23.0",
         "prettier": "^2.7.1",
         "typescript": "5",
