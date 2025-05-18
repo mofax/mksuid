@@ -1,22 +1,35 @@
-import { randomBytes } from "crypto";
-import * as baseX from "base-x";
+import baseX from "base-x";
 
-const baseAlpha = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const baseAlpha =
+	"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const base62 = baseX(baseAlpha);
 
-const TIME_LENGTH = 7;
-const PAYLOAD_LENGTH = 13;
-const RAW_ID_LENGTH = TIME_LENGTH + PAYLOAD_LENGTH;
+const TIME_LENGTH_IN_BYTES = 6;
+const PAYLOAD_LENGTH_IN_BYTES = 14;
+const RAW_ID_LENGTH = TIME_LENGTH_IN_BYTES + PAYLOAD_LENGTH_IN_BYTES;
+const MAX_TIMESTAMP_VALUE = Math.pow(2, 8 * TIME_LENGTH_IN_BYTES) - 1;
 
-function getTime(date?: Date): Buffer {
-	const timestamp = (date ?? new Date()).getTime();
-	const buffer = Buffer.alloc(TIME_LENGTH);
-	buffer.writeUIntBE(timestamp, 0, TIME_LENGTH);
+function getTime(date?: Date): Uint8Array {
+	let timestamp = (date ?? new Date()).getTime();
+	if (timestamp > MAX_TIMESTAMP_VALUE) {
+		throw new Error(
+			`Timestamp too large to fit in ${TIME_LENGTH_IN_BYTES} bytes`
+		);
+	}
+
+	const buffer = new Uint8Array(TIME_LENGTH_IN_BYTES);
+	for (let i = TIME_LENGTH_IN_BYTES - 1; i >= 0; i--) {
+		buffer[i] = timestamp & 0xff;
+		timestamp = Math.floor(timestamp / 256);
+	}
+
 	return buffer;
 }
 
-function getPayload(): Buffer {
-	return randomBytes(PAYLOAD_LENGTH);
+function getPayload(): Uint8Array {
+	const bytes = new Uint8Array(PAYLOAD_LENGTH_IN_BYTES);
+	crypto.getRandomValues(bytes);
+	return bytes;
 }
 
 export default function mKsuid(date?: Date): string {
@@ -26,16 +39,18 @@ export default function mKsuid(date?: Date): string {
 	return base62.encode(rawId);
 }
 
-function parse(str: string): { time: Date; payload: Buffer } {
+function parse(str: string): { time: Date; payload: Uint8Array } {
 	const decoded = base62.decode(str);
 	if (decoded.length !== RAW_ID_LENGTH) {
-		throw new Error(`Invalid mKsuid: expected ${RAW_ID_LENGTH} bytes, got ${decoded.length}`);
+		throw new Error(
+			`Invalid mKsuid: expected ${RAW_ID_LENGTH} bytes, got ${decoded.length}`
+		);
 	}
 
-	const time = decoded.subarray(0, TIME_LENGTH);
-	const payload = decoded.subarray(TIME_LENGTH);
+	const time = decoded.subarray(0, TIME_LENGTH_IN_BYTES);
+	const payload = decoded.subarray(TIME_LENGTH_IN_BYTES);
 
-	const timestamp = time.readUIntBE(0, TIME_LENGTH);
+	const timestamp = Buffer.from(time).readUIntBE(0, TIME_LENGTH_IN_BYTES);
 
 	return {
 		time: new Date(timestamp),
